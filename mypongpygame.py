@@ -14,8 +14,32 @@ pygame.display.set_caption("MyPong - PyGame Edition - 2021.01.30")
 
 
 def game():
+
+    def paused():
+
+        pause = True
+        p_font = pygame.font.Font('assets/PressStart2P.ttf', 44)
+        p_text = p_font.render('PAUSED', True, COLOR_WHITE,
+                                       COLOR_BLACK)
+        p_text_rect = aux_text.get_rect()
+        p_text_rect.center = (680, 350)
+        screen.blit(p_text, p_text_rect)
+        pygame.display.flip()
+
+        while pause:
+            for p in pygame.event.get():
+                if p.type == pygame.QUIT:
+                    pygame.quit()
+
+                if p.type == pygame.KEYDOWN:
+                    if p.key == pygame.K_c:
+                        pause = False
+
+                    if p.key == pygame.K_ESCAPE:
+                        pygame.quit()
+
     r = [-1, 1]
-    ang = [3, 5, 7, 9, 10]
+    ang = [5, 6, 7, 9, 10]
     count_speed = 1
 
     # score text
@@ -83,6 +107,8 @@ def game():
                     player_1_move_up = True
                 if event.key == pygame.K_DOWN:
                     player_1_move_down = True
+                if event.key == pygame.K_p:
+                    paused()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP:
                     player_1_move_up = False
@@ -253,6 +279,15 @@ def game():
             screen.blit(player_1, (50, player_1_y))
             screen.blit(player_2, (1180, player_2_y))
             screen.blit(score_text, score_text_rect)
+
+            # pause
+            pause_font = pygame.font.Font('assets/PressStart2P.ttf', 16)
+            pause_text = pause_font.render('Press p to pause, c to continue or ESC to exit', True, COLOR_WHITE,
+                                               COLOR_BLACK)
+            pause_text_rect = aux_text.get_rect()
+            pause_text_rect.center = (460, 650)
+            screen.blit(score_text, score_text_rect)
+            screen.blit(pause_text, pause_text_rect)
         else:
             # drawing victory
             while True:
@@ -307,3 +342,5 @@ while True:
             screen.blit(initial_text, initial_text_rect)
             screen.blit(aux_text, aux_text_rect)
             pygame.display.flip()
+
+
