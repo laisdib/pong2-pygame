@@ -209,11 +209,24 @@ while game_loop:
             player_1_y = 560
 
         # player 2 "Artificial Intelligence"
-        player_2_y = ball_y
+        # Deixar a IA mais fácil
+        # delay = random.randint(1, 2)
+        # if delay == 1:
+        if ball_y >= player_2_y:
+            player_2_y += 7
+        else:
+            player_2_y += 0
+
+        if ball_y <= player_2_y:
+            player_2_y -= 7
+        else:
+            player_2_y -= 0
+        # player_2_y = ball_y
+
         if player_2_y <= 0:
             player_2_y = 0
-        elif player_2_y >= 570:
-            player_2_y = 570
+        elif player_2_y >= 560:
+            player_2_y = 560
 
         # update score hud
         score_text = score_font.render("P1 " + str(score_1) + ' x ' + str(score_2) +
