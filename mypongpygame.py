@@ -1,11 +1,18 @@
 import pygame
+import random
 
 pygame.init()
 
 COLOR_BLACK = (0, 0, 0)
 COLOR_WHITE = (255, 255, 255)
-
+MAX_SPEED = 9.50
 SCORE_MAX = 2
+
+
+r = [-1, 1]
+ang = [3, 5, 7, 9, 10]
+count_speed = 1
+
 
 size = (1280, 720)
 screen = pygame.display.set_mode(size)
@@ -13,9 +20,9 @@ pygame.display.set_caption("MyPong - PyGame Edition - 2021.01.30")
 
 # score text
 score_font = pygame.font.Font('assets/PressStart2P.ttf', 44)
-score_text = score_font.render('00 x 00', True, COLOR_WHITE, COLOR_BLACK)
+score_text = score_font.render('0 x 0', True, COLOR_WHITE, COLOR_BLACK)
 score_text_rect = score_text.get_rect()
-score_text_rect.center = (680, 50)
+score_text_rect.center = (512, 50)
 
 # victory text
 victory_font = pygame.font.Font('assets/PressStart2P.ttf', 100)
@@ -85,18 +92,81 @@ while game_loop:
             bounce_sound_effect.play()
 
         # ball collision with the player 1 's paddle
-        if ball_x < 100:
+        # Mudança de Velocidade e Angulação, Bug Colisão
+        if 90 < ball_x < 100:
             if player_1_y < ball_y + 25:
                 if player_1_y + 150 > ball_y:
-                    ball_dx *= -1
-                    bounce_sound_effect.play()
+
+                    aux = random.randint(0, 1)
+                    aux_ang = random.randint(0, 4)
+
+                    if player_1_y < ball_y + 25 < player_1_y + 50 or player_1_y + 100 < ball_y + 25 < player_1_y + 175:
+                        if ball_dx > -MAX_SPEED:
+                            print(ball_dx)
+                            ball_dx *= -1.05
+                            ball_dy = ang[aux_ang]
+                            ball_dy *= r[aux]
+                            count_speed += 1
+                            print("Velocidade: %d" % count_speed)
+
+                        else:
+                            ball_dx *= -1
+                            ball_dy = ang[aux_ang]
+                            ball_dy *= r[aux]
+
+                        bounce_sound_effect.play()
+
+                    else:
+                        if ball_dx > -MAX_SPEED:
+                            print(ball_dx)
+                            ball_dx *= -1.25
+                            ball_dy = 0
+                            count_speed += 1
+                            print("Velocidade: %d" % count_speed)
+
+                        else:
+                            ball_dx *= -1
+                            ball_dy = 0
+
+                        bounce_sound_effect.play()
 
         # ball collision with the player 2 's paddle
-        if ball_x > 1160:
+        if 1170 > ball_x > 1160:
             if player_2_y < ball_y + 25:
                 if player_2_y + 150 > ball_y:
-                    ball_dx *= -1
-                    bounce_sound_effect.play()
+
+                    aux = random.randint(0, 1)
+                    aux_ang = random.randint(0, 4)
+
+                    if player_2_y < ball_y + 25 < player_2_y + 50 or player_2_y + 100 < ball_y + 25 < player_2_y + 175:
+                        if ball_dx < MAX_SPEED:
+                            print(ball_dx)
+                            ball_dx *= -1.05
+                            ball_dy = ang[aux_ang]
+                            ball_dy *= r[aux]
+                            count_speed += 1
+                            print("Velocidade: %d" % count_speed)
+
+                        else:
+                            ball_dx *= -1
+                            ball_dy = ang[aux_ang]
+                            ball_dy *= r[aux]
+
+                        bounce_sound_effect.play()
+
+                    else:
+                        if ball_dx < MAX_SPEED:
+                            print(ball_dx)
+                            ball_dx *= -1.25
+                            ball_dy = 0
+                            count_speed += 1
+                            print("Velocidade: %d" % count_speed)
+
+                        else:
+                            ball_dx *= -1
+                            ball_dy = 0
+
+                        bounce_sound_effect.play()
 
         # scoring points
         if ball_x < -50:
@@ -120,13 +190,13 @@ while game_loop:
 
         # player 1 up movement
         if player_1_move_up:
-            player_1_y -= 5
+            player_1_y -= 10
         else:
             player_1_y += 0
 
         # player 1 down movement
         if player_1_move_down:
-            player_1_y += 5
+            player_1_y += 10
         else:
             player_1_y += 0
 
@@ -135,8 +205,8 @@ while game_loop:
             player_1_y = 0
 
         # player 1 collides with lower wall
-        elif player_1_y >= 570:
-            player_1_y = 570
+        elif player_1_y >= 560:
+            player_1_y = 560
 
         # player 2 "Artificial Intelligence"
         player_2_y = ball_y
@@ -146,7 +216,8 @@ while game_loop:
             player_2_y = 570
 
         # update score hud
-        score_text = score_font.render(str(score_1) + ' x ' + str(score_2), True, COLOR_WHITE, COLOR_BLACK)
+        score_text = score_font.render("P1 " + str(score_1) + ' x ' + str(score_2) +
+                                       " IA", True, COLOR_WHITE, COLOR_BLACK)
 
         # drawing objects
         screen.blit(ball, (ball_x, ball_y))
